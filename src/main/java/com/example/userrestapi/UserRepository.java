@@ -1,24 +1,18 @@
 package com.example.userrestapi;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class UserRepository {
-
-    @Autowired
-    private IdGenerator idGenerator;
 
     private List<User> users = Collections.synchronizedList(new ArrayList<>());
 
     public User create(User user) {
         users.add(user);
-//        user.setId(idGenerator.getNextId());
         return user;
     }
 
@@ -45,14 +39,6 @@ public class UserRepository {
             }
         }
         return false;
-    }
-
-    public int getCount() {
-        return users.size();
-    }
-
-    public void clear() {
-        users.clear();
     }
 
     public boolean update(Long id, User updated) {
