@@ -32,7 +32,7 @@ public class UserController {
             return new ResponseEntity<>(users, HttpStatus.OK);
         }
         if (email != null) {
-            users =repository.findByEmail(email);
+            users = repository.findByEmail(email);
             return new ResponseEntity<>(users, HttpStatus.OK);
         }
 
