@@ -1,5 +1,6 @@
 package com.example.userrestapi;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,10 +10,14 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
-    private List<User> users = Collections.synchronizedList(new ArrayList<>());
+    @Autowired
+    IdGenerator idGenerator;
+
+    private List<User> users = new ArrayList<User>();
 
     public User create(User user) {
         users.add(user);
+        user.setId(idGenerator.nextId());
         return user;
     }
 
@@ -26,42 +31,43 @@ public class UserRepository {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getId() == id) {
                 testUser = users.get(i);
+
             }
         }
         return testUser;
     }
 
-    public User findByName(String name) {
-        User testUser = new User();
+    public List<User> findByName(String name) {
+        List<User> usersWithName = new ArrayList<User>();
 
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getName() == name) {
-                testUser = users.get(i);
+            if (users.get(i).getName().equals(name)) {
+                usersWithName.add(users.get(i));
             }
         }
-        return testUser;
+        return usersWithName;
     }
 
-    public User findBySurname(String surname) {
-        User testUser = new User();
+    public List<User> findBySurname(String surname) {
+        List<User> usersWithSurname = new ArrayList<User>();
 
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getSurname() == surname) {
-                testUser = users.get(i);
+            if (users.get(i).getSurname().equals(surname)) {
+                usersWithSurname.add(users.get(i));
             }
         }
-        return testUser;
+        return usersWithSurname;
     }
 
-    public User findByEmail(String email) {
-        User testUser = new User();
+    public List<User> findByEmail(String email) {
+        List<User> usersWithEmail = new ArrayList<User>();
 
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail() == email) {
-                testUser = users.get(i);
+            if (users.get(i).getEmail().equals(email)) {
+                usersWithEmail.add(users.get(i));
             }
         }
-        return testUser;
+        return usersWithEmail;
     }
 
     public boolean delete(Long id) {
@@ -88,13 +94,6 @@ public class UserRepository {
         return false;
     }
 
-    public void updateIfExists(User original, User updated) {
-        original.setId(updated.getId());
-        original.setName(updated.getName());
-        original.setSurname(updated.getSurname());
-        original.setEmail(updated.getEmail());
-    }
-
     public boolean containsUserWithId(Long id) {
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getId() == id) {
@@ -104,30 +103,10 @@ public class UserRepository {
         return false;
     }
 
-    public boolean containsUserWithName(String name) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getName() == name) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean containsUserWithSurname(String surname) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getSurname() == surname) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean containsUserWithEmail(String email) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail() == email) {
-                return true;
-            }
-        }
-        return false;
+    public void updateIfExists(User original, User updated) {
+        original.setId(idGenerator.nextId());
+        original.setName(updated.getName());
+        original.setSurname(updated.getSurname());
+        original.setEmail(updated.getEmail());
     }
 }
