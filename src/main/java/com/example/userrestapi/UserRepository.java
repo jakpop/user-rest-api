@@ -104,7 +104,6 @@ public class UserRepository {
     }
 
     public void updateIfExists(User original, User updated) {
-        original.setId(idGenerator.nextId());
         original.setName(updated.getName());
         original.setSurname(updated.getSurname());
         original.setEmail(updated.getEmail());
