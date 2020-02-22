@@ -1,4 +1,4 @@
-package com.example.userrestapi;
+package com.example.userrestapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.example.userrestapi.repository.UserRepository;
+import com.example.userrestapi.domain.User;
 
 @RestController
 @RequestMapping(value = "/user", produces = "application/json")
@@ -23,20 +27,37 @@ public class UserController {
 
         List<User> users = new ArrayList<User>();
 
-        if (name != null) {
+        //I get it this is probably not the most optimal solution,
+        //as with more parameters the amount of conditions is going to raise drastically,
+        //but it's the only one I was able to come up wth right now
+
+        //FIXME find a better solution to this workaround
+        if ((name != null) && (surname != null) && (email != null)) {
+            users = repository.findByName(name).stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList()).
+                                                stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        else if ((name != null) && (surname != null)) {
+            users = repository.findByName(name).stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
+        }
+        else if ((name != null) && (email != null)) {
+            users = repository.findByName(name).stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        else if ((surname != null) && (email != null)) {
+            users = repository.findBySurname(surname).stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        else if ((name != null)) {
             users = repository.findByName(name);
-            return new ResponseEntity<>(users, HttpStatus.OK);
         }
-        if (surname != null) {
+        else if (surname != null) {
             users = repository.findBySurname(surname);
-            return new ResponseEntity<>(users, HttpStatus.OK);
         }
-        if (email != null) {
+        else if (email != null) {
             users = repository.findByEmail(email);
-            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
+        else {
+            users = repository.findAll();
         }
 
-        users = repository.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

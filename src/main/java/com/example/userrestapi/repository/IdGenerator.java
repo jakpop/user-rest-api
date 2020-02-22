@@ -1,4 +1,4 @@
-package com.example.userrestapi;
+package com.example.userrestapi.repository;
 
 import org.springframework.stereotype.Component;
 

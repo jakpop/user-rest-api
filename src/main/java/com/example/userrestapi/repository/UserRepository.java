@@ -1,11 +1,14 @@
-package com.example.userrestapi;
+package com.example.userrestapi.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.example.userrestapi.domain.User;
 
 @Repository
 public class UserRepository {
@@ -26,58 +29,30 @@ public class UserRepository {
     }
 
     public User findById(Long id) {
-        User testUser = new User();
+        Optional<User> matchingUser = users.stream().filter(user -> user.getId() == id).findFirst();
 
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId() == id) {
-                testUser = users.get(i);
-
-            }
+        User userWithId = new User();
+        if (matchingUser.isPresent()) {
+            userWithId = matchingUser.get();
         }
-        return testUser;
+
+        return userWithId;
     }
 
     public List<User> findByName(String name) {
-        List<User> usersWithName = new ArrayList<User>();
-
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getName().equals(name)) {
-                usersWithName.add(users.get(i));
-            }
-        }
-        return usersWithName;
+        return users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
     }
 
     public List<User> findBySurname(String surname) {
-        List<User> usersWithSurname = new ArrayList<User>();
-
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getSurname().equals(surname)) {
-                usersWithSurname.add(users.get(i));
-            }
-        }
-        return usersWithSurname;
+        return users.stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
     }
 
     public List<User> findByEmail(String email) {
-        List<User> usersWithEmail = new ArrayList<User>();
-
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getEmail().equals(email)) {
-                usersWithEmail.add(users.get(i));
-            }
-        }
-        return usersWithEmail;
+        return users.stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
     }
 
     public boolean delete(Long id) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId() == id) {
-                users.remove(i);
-                return true;
-            }
-        }
-        return false;
+        return users.removeIf(user -> user.getId() == id);
     }
 
     public boolean update(Long id, User updated) {
