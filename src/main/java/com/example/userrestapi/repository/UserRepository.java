@@ -70,12 +70,9 @@ public class UserRepository {
     }
 
     public boolean containsUserWithId(Long id) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId() == id) {
-                return true;
-            }
-        }
-        return false;
+        Optional<User> matchingUser = users.stream().filter(user -> user.getId() == id).findFirst();
+
+        return matchingUser.isPresent();
     }
 
     public void updateIfExists(User original, User updated) {
