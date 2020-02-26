@@ -32,7 +32,7 @@ public class UserController {
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
         User user = repository.findById(id);
 
-        if (repository.findById(id) != null) {
+        if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else {

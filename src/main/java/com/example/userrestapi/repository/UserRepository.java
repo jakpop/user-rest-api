@@ -39,30 +39,19 @@ public class UserRepository {
     }
 
     public List<User> findByParams(String name, String surname, String email) {
+        List<User> matchingUsers = users;
 
-        if ((name != null) && (surname != null) && (email != null)) {
-            return users.stream().filter(user -> user.getName().equals(name) && user.getSurname().equals(surname) && user.getEmail().equals(email)).collect(Collectors.toList());
-        }
-        if ((name != null) && (surname != null)) {
-            return users.stream().filter(user -> user.getName().equals(name) && user.getSurname().equals(surname)).collect(Collectors.toList());
-        }
-        if ((name != null) && (email != null)) {
-            return users.stream().filter(user -> user.getName().equals(name) && user.getEmail().equals(email)).collect(Collectors.toList());
-        }
-        if ((surname != null) && (email != null)) {
-            return users.stream().filter(user -> user.getSurname().equals(surname) && user.getEmail().equals(email)).collect(Collectors.toList());
-        }
         if (name != null) {
-            return users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
+            matchingUsers = users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
         }
         if (surname != null) {
-            return users.stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
+            matchingUsers = users.stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
         }
         if (email != null) {
-            return users.stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+            matchingUsers = users.stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
         }
 
-        return users;
+        return matchingUsers;
     }
 
     public boolean delete(Long id) {
