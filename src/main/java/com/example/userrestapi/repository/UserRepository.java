@@ -31,24 +31,38 @@ public class UserRepository {
     public User findById(Long id) {
         Optional<User> matchingUser = users.stream().filter(user -> user.getId() == id).findFirst();
 
-        User userWithId = new User();
         if (matchingUser.isPresent()) {
-            userWithId = matchingUser.get();
+            return matchingUser.get();
         }
 
-        return userWithId;
+        return null;
     }
 
-    public List<User> findByName(String name) {
-        return users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
-    }
+    public List<User> findByParams(String name, String surname, String email) {
 
-    public List<User> findBySurname(String surname) {
-        return users.stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
-    }
+        if ((name != null) && (surname != null) && (email != null)) {
+            return users.stream().filter(user -> user.getName().equals(name) && user.getSurname().equals(surname) && user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        if ((name != null) && (surname != null)) {
+            return users.stream().filter(user -> user.getName().equals(name) && user.getSurname().equals(surname)).collect(Collectors.toList());
+        }
+        if ((name != null) && (email != null)) {
+            return users.stream().filter(user -> user.getName().equals(name) && user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        if ((surname != null) && (email != null)) {
+            return users.stream().filter(user -> user.getSurname().equals(surname) && user.getEmail().equals(email)).collect(Collectors.toList());
+        }
+        if (name != null) {
+            return users.stream().filter(user -> user.getName().equals(name)).collect(Collectors.toList());
+        }
+        if (surname != null) {
+            return users.stream().filter(user -> user.getSurname().equals(surname)).collect(Collectors.toList());
+        }
+        if (email != null) {
+            return users.stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        }
 
-    public List<User> findByEmail(String email) {
-        return users.stream().filter(user -> user.getEmail().equals(email)).collect(Collectors.toList());
+        return users;
     }
 
     public boolean delete(Long id) {
@@ -59,20 +73,12 @@ public class UserRepository {
         if (updated == null) {
             return false;
         }
-        else {
-            if (containsUserWithId(id)) {
-                User original = findById(id);
-                updateIfExists(original, updated);
-                return true;
-            }
+        if (findById(id) != null) {
+            User original = findById(id);
+            updateIfExists(original, updated);
+            return true;
         }
         return false;
-    }
-
-    public boolean containsUserWithId(Long id) {
-        Optional<User> matchingUser = users.stream().filter(user -> user.getId() == id).findFirst();
-
-        return matchingUser.isPresent();
     }
 
     public void updateIfExists(User original, User updated) {
