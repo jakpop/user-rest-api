@@ -59,11 +59,12 @@ public class UserRepository {
     }
 
     public boolean update(Long id, User updated) {
+        User original = findById(id);
+
         if (updated == null) {
             return false;
         }
-        if (findById(id) != null) {
-            User original = findById(id);
+        if (original != null) {
             updateIfExists(original, updated);
             return true;
         }
