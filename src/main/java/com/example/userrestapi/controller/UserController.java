@@ -1,13 +1,15 @@
-package com.example.userrestapi;
+package com.example.userrestapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import com.example.userrestapi.repository.UserRepository;
+import com.example.userrestapi.domain.User;
 
 @RestController
 @RequestMapping(value = "/user", produces = "application/json")
@@ -21,22 +23,8 @@ public class UserController {
                                                       @RequestParam(value = "surname", required = false) String surname,
                                                       @RequestParam(value = "email", required = false) String email) {
 
-        List<User> users = new ArrayList<User>();
+        List<User> users = repository.findByParams(name, surname, email);
 
-        if (name != null) {
-            users = repository.findByName(name);
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-        if (surname != null) {
-            users = repository.findBySurname(surname);
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-        if (email != null) {
-            users = repository.findByEmail(email);
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-
-        users = repository.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -44,7 +32,7 @@ public class UserController {
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
         User user = repository.findById(id);
 
-        if (repository.containsUserWithId(id)) {
+        if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
         else {
